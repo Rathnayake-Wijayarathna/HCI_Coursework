@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shop - Scandinavian Living</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    header {
+      background: #1e1e1e;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #444;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #bbbbbb;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    main {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #f0f0f0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .product {
+      background: #2a2a2a;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    .product h3 {
+      color: #ffffff;
+      margin: 0.5rem 0;
+    }
+
+    .price {
+      font-size: 1.1rem;
+      color: #ccc;
+      margin: 0.5rem 0;
+    }
+
+    .product button {
+      padding: 0.5rem 1rem;
+      background-color: #ffffff;
+      color: #121212;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .product button:hover {
+      background-color: #dddddd;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 300px;
+      background: #1b1b1b;
+      border-radius: 10px;
+    }
+
+    footer {
+      background-color: #000;
+      color: #888;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Scandinavian Living</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="design.html">Design</a>
+      <a href="contact.html">Contact</a>
+      
+    </nav>
+  </header>
+
+
+  <main>
+    <h2>Our Scandinavian Collection</h2>
+    <div class="grid">
+      <div class="product">
+        <h3>TV Stand</h3>
+        <model-viewer src="models/tv_stand.glb" alt="TV Stand" auto-rotate camera-controls></model-viewer>
+        <p class="price">$249.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Glass Coffee Table</h3>
+        <model-viewer src="models/table_with_glass.glb" alt="Glass Table" auto-rotate camera-controls></model-viewer>
+        <p class="price">$189.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Woven Lounge Chair</h3>
+        <model-viewer src="models/woven_lounge_chair.glb" alt="Lounge Chair" auto-rotate camera-controls></model-viewer>
+        <p class="price">$229.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Round Dining Table</h3>
+        <model-viewer src="models/round_glass_table.glb" alt="Round Table" auto-rotate camera-controls></model-viewer>
+        <p class="price">$349.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Grey Fabric Sofa</h3>
+        <model-viewer src="models/sofa_grey_fabric.glb" alt="Grey Sofa" auto-rotate camera-controls></model-viewer>
+        <p class="price">$499.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Blossi Floor Lamp</h3>
+        <model-viewer src="models/blossi_floor_lamp.glb" alt="Floor Lamp" auto-rotate camera-controls></model-viewer>
+        <p class="price">$179.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Minimal Bookshelf</h3>
+        <model-viewer src="models/bookshelf_free.glb" alt="Bookshelf" auto-rotate camera-controls></model-viewer>
+        <p class="price">$199.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+      <div class="product">
+        <h3>Oak Armchair</h3>
+        <model-viewer src="models/366_armchair.glb" alt="Armchair" auto-rotate camera-controls></model-viewer>
+        <p class="price">$189.00</p>
+        <a href="contact.html"><button>Inquiry</button></a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Scandinavian Living. All rights reserved.
+  </footer>
+
+</body>
+</html>

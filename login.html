@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scandinavian Living</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* General Page Styling */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80');
+      background-size: cover;
+      background-position: center;
+      background-blend-mode: overlay;
+    }
+
+
+
+  
+  /* Login Container */
+  .login-container {
+    background-color: #1e1e1e;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .login-container h2 {
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .login-container h2 span{
+    color: #2e6edb;
+    font-size: 30px;
+    
+  }
+
+  .login-container h3{
+    text-align: center;
+
+  }
+  
+  /* Input Fields and Select */
+  .login-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #cccccc;
+  }
+  
+  .login-container input
+   {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1.2rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #2b2b2b;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+
+  .login-container select{
+    width: 105%;
+    padding: 0.6rem;
+    margin-bottom: 1.2rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #2b2b2b;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+  
+  .login-container input::placeholder {
+    color: #888;
+  }
+  
+  /* Button */
+  .login-container button {
+    width: 105%;
+    padding: 0.7rem;
+    background-color: #3f88ff;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .login-container button:hover {
+    background-color: #2e6edb;
+  }
+  
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Scandinavian <span>Living</span></h2>
+    <h3>LOGIN</h3>
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter your name" />
+
+    <label for="role">Select Role</label>
+    <select id="role">
+      <option value="Customer">Customer</option>
+      <option value="Admin">Admin</option>
+    </select>
+
+    <button onclick="login()">Login</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

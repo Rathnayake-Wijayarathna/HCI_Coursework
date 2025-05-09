@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scandinavian Living</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+      
+    }
+
+    header {
+      background: #1e1e1e;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #444;
+      
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #bbbbbb;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    nav button#logoutBtn {
+      margin-left: 20px;
+      padding: 8px 16px;
+      background-color: #3f88ff;
+      border: none;
+      border-radius: 5px;
+      color: #ffffff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    nav button#logoutBtn:hover {
+      background-color: #2e6edb;
+    }
+
+    .intro {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4rem 2rem;
+      background: #1b1b1b;
+      background-image: url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80');
+      background-size: cover;
+      background-position: center;
+      background-blend-mode: overlay;
+    }
+
+    .intro-text {
+      flex: 1;
+      padding-right: 2rem;
+    }
+
+    .intro-text h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: #f9f9f9;
+    }
+
+    .intro-text p {
+      font-size: 1rem;
+      color: #bbbbbb;
+    }
+
+    .intro-view {
+      flex: 1;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 350px;
+      border-radius: 10px;
+      background: #2a2a2a;
+    }
+
+    .products {
+      padding: 3rem 2rem;
+      text-align: center;
+      background: #181818;
+    }
+
+    .products h2 {
+      margin-bottom: 2rem;
+      color: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: #2a2a2a;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .card h3 {
+      color: #f0f0f0;
+    }
+
+    .room-section {
+      padding: 3rem 2rem;
+      background: #111;
+      text-align: center;
+    }
+
+    .room-section h2 {
+      margin-bottom: 1rem;
+      color: #f0f0f0;
+    }
+
+    .room-section p {
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+
+    .room-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .room-container model-viewer {
+      width: 100%;
+      max-width: 900px;
+      height: 500px;
+      background: #222;
+      border-radius: 12px;
+    }
+
+    .greeting {
+      padding: 0.75rem 2rem;
+      background-color: #181818;
+      color: #f0f0f0;
+      font-size: 1rem;
+    }
+
+    footer {
+      background-color: #000;
+      color: #888;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .features {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: #181818;
+    }
+
+    .features h2 {
+      margin-bottom: 1rem;
+      color: #ffffff;
+      font-size: 2rem;
+    }
+    
+    .features p {
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      color: #aaa;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: #2a2a2a;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: left;
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+      color: #f0f0f0;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+    
+    .feature-card p {
+      color: #bbbbbb;
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #007acc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Scandinavian Living</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="design.html">Design</a>
+      <a href="contact.html">Contact</a>
+      <button id="logoutBtn" onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <div class="greeting">
+    Welcome, <strong><span id="userName">Guest</span></strong>!
+  </div>
+
+  <section class="intro">
+    <div class="intro-text">
+      <h2>Timeless Nordic Comfort</h2>
+      <p>Discover our collection of Scandinavian furniture crafted for elegance and simplicity.</p>
+    </div>
+    <div class="intro-view">
+      <model-viewer src="models/366_armchair.glb" alt="Armchair" auto-rotate camera-controls></model-viewer>
+    </div>
+  </section>
+
+  
+    <section class="features">
+      <h2>Room Designer Features</h2>
+      <p>Our intuitive room designer puts you in control with powerful customization tools</p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💨</div>
+          <h3>Customize Room Dimensions</h3>
+          <p>Set the exact size and shape of your room to match your actual space. Choose from rectangle, square, or L-shaped layouts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Color Schemes</h3>
+          <p>Apply custom colors to walls, floors, and furniture. Change colors for individual items or entire design at once.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🖼</div>
+          <h3>2D & 3D Visualization</h3>
+          <p>Switch between top-down 2D floorplan view and immersive 3D perspective to see your design from every angle.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📐</div>
+          <h3>Scaling & Fitting</h3>
+          <p>Automatically scale your design to fit the room perfectly or manually adjust individual item sizes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💡</div>
+          <h3>Lighting & Shading</h3>
+          <p>Add realistic lighting effects and shadows to create the perfect ambiance for your virtual space.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h3>Save & Export</h3>
+          <p>Save your designs to revisit later or export them to share with friends, family, or interior designers.</p>
+        </div>
+      </div>
+    </section>
+  
+
+  <section class="products">
+    <h2>Featured Pieces</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>TV Stand</h3>
+        <model-viewer src="models/tv_stand.glb" auto-rotate camera-controls></model-viewer>
+      </div>
+      <div class="card">
+        <h3>Glass Table</h3>
+        <model-viewer src="models/round_glass_table.glb" auto-rotate camera-controls></model-viewer>
+      </div>
+      <div class="card">
+        <h3>Grey Fabric Sofa</h3>
+        <model-viewer src="models/sofa_grey_fabric.glb" auto-rotate camera-controls></model-viewer>
+      </div>
+    </div>
+  </section>
+
+  <section class="room-section">
+    <h2>Visualize in a Scandinavian Room</h2>
+    <p>Experience product fit inside a beautifully designed Nordic space.</p>
+    <div class="room-container">
+      <model-viewer src="models/free_dining_set_scandinavian_style.glb"
+                    alt="Scandinavian Room Layout"
+                    auto-rotate
+                    camera-controls
+                    shadow-intensity="1">
+      </model-viewer>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Scandinavian Living. All rights reserved.
+  </footer>
+
+  <script>
+    // Redirect to login if not customer
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
+
+    if (!username || role !== "Customer") {
+      window.location.href = "login.html";
+    }
+
+    // Set greeting
+    document.getElementById("userName").textContent = username;
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>
