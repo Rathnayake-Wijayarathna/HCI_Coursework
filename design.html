@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Room Designer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+    }
+    
+    header {
+      background: #1e1e1e;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #444;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #bbbbbb;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    nav button#logoutBtn {
+      margin-left: 20px;
+      padding: 8px 16px;
+      background-color: #3f88ff;
+      border: none;
+      border-radius: 5px;
+      color: #ffffff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    nav button#logoutBtn:hover {
+      background-color: #2e6edb;
+    }
+    /* 3D Floor Plan Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+    
+    .modal-content {
+      position: relative;
+      margin: 5% auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 900px;
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .close-modal:hover {
+      color: #fff;
+    }
+    
+    #canvas3d {
+      width: 100%;
+      height: 500px;
+      background: #111;
+      border-radius: 8px;
+      display: block;
+    }
+    
+    .view-controls {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    header {
+      background: #1e1e1e;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #444;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #fff;
+      margin: 0;
+    }
+    .toolbar, .room-options {
+      display: flex;
+      gap: 10px;
+      padding: 1rem 2rem;
+      background: #181818;
+      flex-wrap: wrap;
+    }
+    .toolbar button, .room-options input, select, button {
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .toolbar button:hover, .room-options button:hover {
+      background: #444;
+    }
+    .canvas-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .view-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    canvas {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+    }
+    model-viewer {
+      width: 500px;
+      height: 400px;
+      background: #222;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    footer {
+      background: #1e1e1e;
+      color: #888;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .furniture-library {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      background: #181818;
+      margin-bottom: 1rem;
+      justify-content: center;
+    }
+    .furniture-item {
+      width: 120px;
+      height: 120px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .furniture-item:hover {
+      border-color: #3f88ff;
+      transform: translateY(-5px);
+    }
+    .furniture-item.selected {
+      border-color: #ff5722;
+    }
+    .furniture-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #222;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .furniture-item span {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      text-align: center;
+      font-size: 12px;
+      padding: 4px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #colorPicker {
+      height: 36px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    .action-buttons button {
+      padding: 0.7rem 1.5rem;
+      background: #3f88ff;
+    }
+    .action-buttons button.delete {
+      background: #ff4444;
+    }
+    #loadingMessage {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 100;
+      display: none;
+    }
+    .instruction {
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 6px;
+      margin: 1rem 2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Scandinavian Living</h1>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="shop.html">Shop</a>
+          <a href="design.html">Design</a>
+          <a href="contact.html">Contact</a>
+          
+        </nav>
+      </header>
+    
+
+  <div class="room-options">
+    <input type="number" id="roomWidth" placeholder="Room Width (m)" value="6" min="1" max="20" />
+    <input type="number" id="roomHeight" placeholder="Room Length (m)" value="5" min="1" max="20" />
+    <select id="roomShape">
+      <option value="rectangle">Rectangle</option>
+      <option value="square">Square</option>
+      <option value="lshape">L-Shape</option>
+    </select>
+    <input type="color" id="roomColor" value="#cccccc" />
+    <button onclick="createRoom()">Create Room</button>
+  </div>
+
+  <div class="instruction">
+    Click on a furniture item below to select it, then click on the 2D view to place it in your room.
+  </div>
+
+  <div class="furniture-library" id="furnitureLibrary">
+    <!-- Furniture items will be added here dynamically -->
+  </div>
+
+  <div class="controls">
+    <button id="rotateBtn" onclick="toggleRotate()">Rotate Item</button>
+    <input type="color" id="colorPicker" value="#888888" onchange="updateSelectedColor(this.value)" />
+    <button id="deleteBtn" class="delete" onclick="deleteSelected()">Delete Selected</button>
+    <button id="clearBtn" class="delete" onclick="clearRoom()">Clear Room</button>
+  </div>
+
+  <div class="canvas-container">
+    <div class="view-container">
+      <h3>2D Floor Plan</h3>
+      <canvas id="canvas2d" width="500" height="400"></canvas>
+    </div>
+    <div class="view-container">
+      <h3>3D View</h3>
+      <model-viewer id="viewer" camera-controls auto-rotate shadow-intensity="1" environment-image="neutral" exposure="0.8"></model-viewer>
+      <button id="view3DBtn" onclick="generate3DView()" style="margin-top: 10px; background: #3f88ff;">View Floor Plan in 3D</button>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <button onclick="saveDesign()">Save Design</button>
+    <button onclick="loadDesign()">Load Design</button>
+    <button onclick="exportDesign()">Export Design</button>
+  </div>
+
+  <div id="loadingMessage">Loading 3D model...</div>
+
+  <footer>&copy; 2025 Room Designer</footer>
+
+  <!-- 3D Floor Plan Modal -->
+  <div id="floorPlan3DModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <h2>3D Floor Plan View</h2>
+      <div id="canvas3d"></div>
+      <div class="view-controls">
+        <button onclick="resetCamera()">Reset Camera</button>
+        <button onclick="toggleWireframe()">Toggle Wireframe</button>
+        <button onclick="toggleFirstPerson()">First Person View</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
+  <script>
+    // Furniture library data
+    const furnitureData = [
+      { id: 'chair1', name: 'Armchair', type: 'chair', width: 80, height: 80, modelUrl: 'models/366_armchair.glb', imageUrl: '/images/f.png' },
+      { id: 'chair2', name: 'TV Stand', type: 'chair', width: 70, height: 70, modelUrl: 'models/tv_stand.glb', imageUrl: '/images/c.png' },
+      { id: 'sofa1', name: 'Table with Glass', type: 'sofa', width: 200, height: 100, modelUrl: 'models/table_with_glass.glb', imageUrl: '/images/a.png' },
+      { id: 'table1', name: 'Woven Lounge Chair', type: 'table', width: 120, height: 80, modelUrl: 'models/woven_lounge_chair.glb', imageUrl: '/images/e.png' },
+      { id: 'lamp1', name: 'Sofa', type: 'lamp', width: 40, height: 40, modelUrl: 'models/sofa_grey_fabric.glb', imageUrl: '/images/b.png' },
+      { id: 'bed1', name: 'Blossi Floor Lamp', type: 'bed', width: 200, height: 160, modelUrl: 'models/blossi_floor_lamp.glb', imageUrl: '/images/d.png' },
+      { id: 'shelf1', name: 'Bookshelf', type: 'shelf', width: 100, height: 40, modelUrl: 'models/bookshelf_free.glb', imageUrl: '/images/g.png' }
+    ];
+
+    // Global variables
+    let canvas, ctx;
+    let roomItems = [];
+    let selectedFurniture = null;
+    let selectedItemIndex = -1;
+    let isDragging = false;
+    let isRotating = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let scale = 50; // 50 pixels = 1 meter
+    let roomWidth = 6;
+    let roomHeight = 5;
+    let roomShape = 'rectangle';
+    let roomColor = '#cccccc';
+
+    // Initialize on page load
+    window.onload = function() {
+      initDesign();
+      setupCanvas();
+      populateFurnitureLibrary();
+      createRoom();
+    };
+
+    function initDesign() {
+      // In a real app, you would check user authentication here
+      // For demo purposes, we'll skip the authentication check
+    }
+
+    function logout() {
+      // In a real app, you would implement proper logout
+      alert('Logout functionality would be implemented here.');
+    }
+
+    function setupCanvas() {
+      canvas = document.getElementById("canvas2d");
+      ctx = canvas.getContext("2d");
+      
+      // Add event listeners for canvas interactions
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('click', handleCanvasClick);
+    }
+
+    function populateFurnitureLibrary() {
+      const library = document.getElementById('furnitureLibrary');
+      
+      furnitureData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'furniture-item';
+        div.dataset.id = item.id;
+        div.innerHTML = `
+          <img src="${item.imageUrl}" alt="${item.name}">
+          <span>${item.name}</span>
+        `;
+        div.addEventListener('click', () => selectFurnitureFromLibrary(item));
+        library.appendChild(div);
+      });
+    }
+
+    function selectFurnitureFromLibrary(item) {
+      // Deselect all items in the library
+      document.querySelectorAll('.furniture-item').forEach(el => {
+        el.classList.remove('selected');
+      });
+      
+      // Select the clicked item
+      document.querySelector(`.furniture-item[data-id="${item.id}"]`).classList.add('selected');
+      
+      selectedFurniture = item;
+      selectedItemIndex = -1; // No item on canvas is selected
+      
+      // Update 3D viewer with the selected furniture model
+      const viewer = document.getElementById('viewer');
+      viewer.src = item.modelUrl;
+      
+      // Show loading message
+      document.getElementById('loadingMessage').style.display = 'block';
+      
+      // Hide loading message when model is loaded
+      viewer.addEventListener('load', () => {
+        document.getElementById('loadingMessage').style.display = 'none';
+      }, { once: true });
+    }
+
+    function createRoom() {
+      roomWidth = parseInt(document.getElementById("roomWidth").value) || 6;
+      roomHeight = parseInt(document.getElementById("roomHeight").value) || 5;
+      roomShape = document.getElementById("roomShape").value;
+      roomColor = document.getElementById("roomColor").value;
+      
+      // Clear canvas and redraw
+      drawRoom();
+      drawAllItems();
+    }
+
+    function drawRoom() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw room based on shape
+      ctx.fillStyle = roomColor;
+      
+      const canvasWidth = roomWidth * scale;
+      const canvasHeight = roomHeight * scale;
+      
+      // Calculate offset to center the room
+      const offsetX = (canvas.width - canvasWidth) / 2;
+      const offsetY = (canvas.height - canvasHeight) / 2;
+      
+      if (roomShape === 'rectangle' || roomShape === 'square') {
+        ctx.fillRect(offsetX, offsetY, canvasWidth, canvasHeight);
+      } else if (roomShape === 'lshape') {
+        // Draw an L-shaped room
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY);
+        ctx.lineTo(offsetX + canvasWidth, offsetY);
+        ctx.lineTo(offsetX + canvasWidth, offsetY + canvasHeight / 2);
+        ctx.lineTo(offsetX + canvasWidth / 2, offsetY + canvasHeight / 2);
+        ctx.lineTo(offsetX + canvasWidth / 2, offsetY + canvasHeight);
+        ctx.lineTo(offsetX, offsetY + canvasHeight);
+        ctx.closePath();
+        ctx.fill();
+      }
+      
+      // Draw grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      
+      // Draw vertical grid lines
+      for (let x = offsetX; x <= offsetX + canvasWidth; x += scale) {
+        ctx.beginPath();
+        ctx.moveTo(x, offsetY);
+        ctx.lineTo(x, offsetY + canvasHeight);
+        ctx.stroke();
+      }
+      
+      // Draw horizontal grid lines
+      for (let y = offsetY; y <= offsetY + canvasHeight; y += scale) {
+        ctx.beginPath();
+        ctx.moveTo(offsetX, y);
+        ctx.lineTo(offsetX + canvasWidth, y);
+        ctx.stroke();
+      }
+      
+      // Draw room border
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 2;
+      if (roomShape === 'rectangle' || roomShape === 'square') {
+        ctx.strokeRect(offsetX, offsetY, canvasWidth, canvasHeight);
+      } else if (roomShape === 'lshape') {
+        ctx.beginPath();
+        ctx.moveTo(offsetX, offsetY);
+        ctx.lineTo(offsetX + canvasWidth, offsetY);
+        ctx.lineTo(offsetX + canvasWidth, offsetY + canvasHeight / 2);
+        ctx.lineTo(offsetX + canvasWidth / 2, offsetY + canvasHeight / 2);
+        ctx.lineTo(offsetX + canvasWidth / 2, offsetY + canvasHeight);
+        ctx.lineTo(offsetX, offsetY + canvasHeight);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    function handleCanvasClick(e) {
+      if (!selectedFurniture) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // If we already have a selected item on the canvas, deselect it
+      selectedItemIndex = -1;
+      
+      // Add new item at the clicked position
+      addItemToRoom(selectedFurniture, x, y);
+    }
+
+    function addItemToRoom(furniture, x, y) {
+      // Calculate room offset
+      const canvasWidth = roomWidth * scale;
+      const canvasHeight = roomHeight * scale;
+      const offsetX = (canvas.width - canvasWidth) / 2;
+      const offsetY = (canvas.height - canvasHeight) / 2;
+      
+      // Ensure the item is within the room boundaries
+      const itemWidth = furniture.width * (scale / 100);
+      const itemHeight = furniture.height * (scale / 100);
+      
+      // Adjust position to be centered on the mouse click
+      const adjustedX = Math.max(offsetX, Math.min(x - itemWidth / 2, offsetX + canvasWidth - itemWidth));
+      const adjustedY = Math.max(offsetY, Math.min(y - itemHeight / 2, offsetY + canvasHeight - itemHeight));
+      
+      // Create new item
+      const newItem = {
+        id: furniture.id,
+        type: furniture.type,
+        name: furniture.name,
+        x: adjustedX,
+        y: adjustedY,
+        width: itemWidth,
+        height: itemHeight,
+        rotation: 0,
+        color: document.getElementById('colorPicker').value,
+        modelUrl: furniture.modelUrl
+      };
+      
+      // Add to items array
+      roomItems.push(newItem);
+      
+      // Select the newly added item
+      selectedItemIndex = roomItems.length - 1;
+      
+      // Redraw canvas
+      drawRoom();
+      drawAllItems();
+    }
+
+    function drawAllItems() {
+      roomItems.forEach((item, index) => {
+        drawItem(item, index === selectedItemIndex);
+      });
+    }
+
+    function drawItem(item, isSelected) {
+      ctx.save();
+      
+      // Translate to the center of the item
+      ctx.translate(item.x + item.width / 2, item.y + item.height / 2);
+      
+      // Rotate
+      ctx.rotate(item.rotation * Math.PI / 180);
+      
+      // Draw item
+      ctx.fillStyle = item.color;
+      if (isSelected) {
+        // Draw selection border
+        ctx.strokeStyle = '#ff5722';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-item.width / 2, -item.height / 2, item.width, item.height);
+      }
+      
+      // Fill the item
+      ctx.fillRect(-item.width / 2, -item.height / 2, item.width, item.height);
+      
+      // Add item icon based on type
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(item.name, 0, 0);
+      
+      ctx.restore();
+    }
+
+    function handleMouseDown(e) {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      // Check if we're clicking on an existing item
+      for (let i = roomItems.length - 1; i >= 0; i--) {
+        const item = roomItems[i];
+        
+        // Account for rotation when checking if point is inside
+        const centerX = item.x + item.width / 2;
+        const centerY = item.y + item.height / 2;
+        
+        // Convert to local coordinates
+        const dx = mouseX - centerX;
+        const dy = mouseY - centerY;
+        
+        // Rotate point
+        const angle = -item.rotation * Math.PI / 180;
+        const rotX = dx * Math.cos(angle) - dy * Math.sin(angle);
+        const rotY = dx * Math.sin(angle) + dy * Math.cos(angle);
+        
+        // Check if point is inside unrotated rectangle
+        if (Math.abs(rotX) <= item.width / 2 && Math.abs(rotY) <= item.height / 2) {
+          selectedItemIndex = i;
+          isDragging = true;
+          dragOffsetX = rotX;
+          dragOffsetY = rotY;
+          
+          // Update 3D viewer with selected item model
+          const viewer = document.getElementById('viewer');
+          viewer.src = item.modelUrl;
+          
+          // Show loading message
+          document.getElementById('loadingMessage').style.display = 'block';
+          
+          // Hide loading message when model is loaded
+          viewer.addEventListener('load', () => {
+            document.getElementById('loadingMessage').style.display = 'none';
+          }, { once: true });
+          
+          // Update color picker to match selected item
+          document.getElementById('colorPicker').value = item.color;
+          
+          // Redraw with selection
+          drawRoom();
+          drawAllItems();
+          return;
+        }
+      }
+      
+      // If we didn't click on any item, deselect
+      selectedItemIndex = -1;
+      isDragging = false;
+      drawRoom();
+      drawAllItems();
+    }
+
+    function handleMouseMove(e) {
+      if (!isDragging || selectedItemIndex === -1) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      const item = roomItems[selectedItemIndex];
+      
+      // Calculate new position, accounting for rotation
+      const angle = item.rotation * Math.PI / 180;
+      const rotatedOffsetX = dragOffsetX * Math.cos(angle) - dragOffsetY * Math.sin(angle);
+      const rotatedOffsetY = dragOffsetX * Math.sin(angle) + dragOffsetY * Math.cos(angle);
+      
+      item.x = mouseX - item.width / 2 - rotatedOffsetX;
+      item.y = mouseY - item.height / 2 - rotatedOffsetY;
+      
+      // Redraw
+      drawRoom();
+      drawAllItems();
+    }
+
+    function handleMouseUp() {
+      isDragging = false;
+    }
+
+    function toggleRotate() {
+      if (selectedItemIndex === -1) {
+        alert('Please select an item to rotate.');
+        return;
+      }
+      
+      const item = roomItems[selectedItemIndex];
+      item.rotation = (item.rotation + 90) % 360;
+      
+      // Swap width and height if rotation is 90 or 270 degrees
+      if (item.rotation % 180 !== 0) {
+        // Only swap if width and height are different
+        if (item.width !== item.height) {
+          [item.width, item.height] = [item.height, item.width];
+        }
+      }
+      
+      // Redraw
+      drawRoom();
+      drawAllItems();
+    }
+
+    function updateSelectedColor(color) {
+      if (selectedItemIndex === -1) return;
+      
+      roomItems[selectedItemIndex].color = color;
+      
+      // Redraw
+      drawRoom();
+      drawAllItems();
+    }
+
+    function deleteSelected() {
+      if (selectedItemIndex === -1) {
+        alert('Please select an item to delete.');
+        return;
+      }
+      
+      roomItems.splice(selectedItemIndex, 1);
+      selectedItemIndex = -1;
+      
+      // Redraw
+      drawRoom();
+      drawAllItems();
+    }
+
+    function clearRoom() {
+      if (confirm('Are you sure you want to clear the room?')) {
+        roomItems = [];
+        selectedItemIndex = -1;
+        
+        // Redraw
+        drawRoom();
+      }
+    }
+
+    function saveDesign() {
+      try {
+        const designData = {
+          room: {
+            width: roomWidth,
+            height: roomHeight,
+            shape: roomShape,
+            color: roomColor
+          },
+          items: roomItems
+        };
+        
+        localStorage.setItem('roomDesign', JSON.stringify(designData));
+        alert('Design saved successfully!');
+      } catch (error) {
+        alert('Error saving design: ' + error.message);
+      }
+    }
+
+    function loadDesign() {
+      try {
+        const savedDesign = localStorage.getItem('roomDesign');
+        
+        if (!savedDesign) {
+          alert('No saved design found.');
+          return;
+        }
+        
+        const designData = JSON.parse(savedDesign);
+        
+        // Load room configuration
+        roomWidth = designData.room.width;
+        roomHeight = designData.room.height;
+        roomShape = designData.room.shape;
+        roomColor = designData.room.color;
+        
+        // Update form controls
+        document.getElementById('roomWidth').value = roomWidth;
+        document.getElementById('roomHeight').value = roomHeight;
+        document.getElementById('roomShape').value = roomShape;
+        document.getElementById('roomColor').value = roomColor;
+        
+        // Load items
+        roomItems = designData.items;
+        selectedItemIndex = -1;
+        
+        // Redraw
+        drawRoom();
+        drawAllItems();
+        
+        alert('Design loaded successfully!');
+      } catch (error) {
+        alert('Error loading design: ' + error.message);
+      }
+    }
+
+    function exportDesign() {
+      try {
+        // Create a data URL from the canvas
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // Create a temporary link element
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'room-design.png';
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        alert('Error exporting design: ' + error.message);
+      }
+    }
+    
+    // 3D Floor Plan Functionality
+    let scene, camera, renderer, controls;
+    let wireframeMaterial = false;
+    let isFirstPersonView = false;
+    let firstPersonControls = null;
+    let floorMesh, wallsMesh;
+    let furniture3DObjects = [];
+    
+    function generate3DView() {
+      const modal = document.getElementById('floorPlan3DModal');
+      modal.style.display = 'block';
+      
+      // Initialize 3D scene if not already done
+      if (!scene) {
+        init3DScene();
+      } else {
+        // Clear existing furniture objects
+        furniture3DObjects.forEach(obj => scene.remove(obj));
+        furniture3DObjects = [];
+        
+        // Remove existing floor and walls
+        if (floorMesh) scene.remove(floorMesh);
+        if (wallsMesh) scene.remove(wallsMesh);
+      }
+      
+      // Create room and furniture in 3D
+      create3DRoom();
+      create3DFurniture();
+      
+      // Render the scene
+      renderer.render(scene, camera);
+    }
+    
+    function init3DScene() {
+      // Create scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x121212);
+      
+      // Create camera
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth * 0.8 / 500, 0.1, 1000);
+      camera.position.set(0, 10, 10);
+      camera.lookAt(0, 0, 0);
+      
+      // Create renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth * 0.8, 500);
+      renderer.shadowMap.enabled = true;
+      
+      // Add to DOM
+      const container = document.getElementById('canvas3d');
+      container.innerHTML = '';
+      container.appendChild(renderer.domElement);
+      
+      // Add orbit controls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.25;
+      
+      // Add lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+      
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(5, 10, 7);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 1024;
+      directionalLight.shadow.mapSize.height = 1024;
+      scene.add(directionalLight);
+      
+      // Add grid helper
+      const gridHelper = new THREE.GridHelper(30, 30, 0x444444, 0x222222);
+      scene.add(gridHelper);
+      
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth * 0.8 / 500;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth * 0.8, 500);
+      });
+    }
+    
+    function create3DRoom() {
+      // Scale factor to convert from 2D canvas to 3D space
+      const scaleToWorld = 0.1;
+      
+      // Calculate room dimensions in 3D space
+      const roomWidth3D = roomWidth * scaleToWorld * 10;
+      const roomHeight3D = roomHeight * scaleToWorld * 10;
+      const roomDepth3D = 0.2; // Wall height
+      
+      // Create floor
+      const floorGeometry = new THREE.PlaneGeometry(roomWidth3D, roomHeight3D);
+      const floorMaterial = new THREE.MeshStandardMaterial({
+        color: roomColor,
+        roughness: 0.8,
+        metalness: 0.2,
+        side: THREE.DoubleSide
+      });
+      floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+      floorMesh.rotation.x = -Math.PI / 2; // Rotate to be horizontal
+      floorMesh.position.y = 0;
+      floorMesh.receiveShadow = true;
+      scene.add(floorMesh);
+      
+      // Create walls based on room shape
+      let wallsGeometry;
+      
+      if (roomShape === 'rectangle' || roomShape === 'square') {
+        // Create walls for rectangular room
+        const wallHeight = 3;
+        const wallThickness = 0.1;
+        
+        // Group for walls
+        const wallsGroup = new THREE.Group();
+        
+        // North wall
+        const northWallGeo = new THREE.BoxGeometry(roomWidth3D, wallHeight, wallThickness);
+        const northWallMesh = new THREE.Mesh(northWallGeo, floorMaterial);
+        northWallMesh.position.set(0, wallHeight/2, -roomHeight3D/2);
+        wallsGroup.add(northWallMesh);
+        
+        // South wall
+        const southWallGeo = new THREE.BoxGeometry(roomWidth3D, wallHeight, wallThickness);
+        const southWallMesh = new THREE.Mesh(southWallGeo, floorMaterial);
+        southWallMesh.position.set(0, wallHeight/2, roomHeight3D/2);
+        wallsGroup.add(southWallMesh);
+        
+        // East wall
+        const eastWallGeo = new THREE.BoxGeometry(wallThickness, wallHeight, roomHeight3D);
+        const eastWallMesh = new THREE.Mesh(eastWallGeo, floorMaterial);
+        eastWallMesh.position.set(roomWidth3D/2, wallHeight/2, 0);
+        wallsGroup.add(eastWallMesh);
+        
+        // West wall
+        const westWallGeo = new THREE.BoxGeometry(wallThickness, wallHeight, roomHeight3D);
+        const westWallMesh = new THREE.Mesh(westWallGeo, floorMaterial);
+        westWallMesh.position.set(-roomWidth3D/2, wallHeight/2, 0);
+        wallsGroup.add(westWallMesh);
+        
+        wallsMesh = wallsGroup;
+      } else if (roomShape === 'lshape') {
+        // L-shape room has special wall configuration
+        const wallHeight = 3;
+        const wallThickness = 0.1;
+        
+        // Group for walls
+        const wallsGroup = new THREE.Group();
+        
+        // Calculate L-shape dimensions
+        const halfWidth = roomWidth3D / 2;
+        const halfHeight = roomHeight3D / 2;
+        
+        // North wall (full width)
+        const northWallGeo = new THREE.BoxGeometry(roomWidth3D, wallHeight, wallThickness);
+        const northWallMesh = new THREE.Mesh(northWallGeo, floorMaterial);
+        northWallMesh.position.set(0, wallHeight/2, -halfHeight);
+        wallsGroup.add(northWallMesh);
+        
+        // South wall (half width)
+        const southWallGeo = new THREE.BoxGeometry(halfWidth, wallHeight, wallThickness);
+        const southWallMesh = new THREE.Mesh(southWallGeo, floorMaterial);
+        southWallMesh.position.set(-halfWidth/2, wallHeight/2, halfHeight);
+        wallsGroup.add(southWallMesh);
+        
+        // East wall (half height)
+        const eastWallGeo = new THREE.BoxGeometry(wallThickness, wallHeight, halfHeight);
+        const eastWallMesh = new THREE.Mesh(eastWallGeo, floorMaterial);
+        eastWallMesh.position.set(halfWidth, wallHeight/2, -halfHeight/2);
+        wallsGroup.add(eastWallMesh);
+        
+        // East wall lower section
+        const eastWallLowerGeo = new THREE.BoxGeometry(wallThickness, wallHeight, halfHeight);
+        const eastWallLowerMesh = new THREE.Mesh(eastWallLowerGeo, floorMaterial);
+        eastWallLowerMesh.position.set(0, wallHeight/2, halfHeight/2);
+        wallsGroup.add(eastWallLowerMesh);
+        
+        // West wall
+        const westWallGeo = new THREE.BoxGeometry(wallThickness, wallHeight, roomHeight3D);
+        const westWallMesh = new THREE.Mesh(westWallGeo, floorMaterial);
+        westWallMesh.position.set(-halfWidth, wallHeight/2, 0);
+        wallsGroup.add(westWallMesh);
+        
+        wallsMesh = wallsGroup;
+      }
+      
+      scene.add(wallsMesh);
+    }
+    
+    function create3DFurniture() {
+      // Scale factor to convert from 2D canvas to 3D space
+      const scaleToWorld = 0.1;
+      
+      // Offset to center the room in the 3D scene
+      const offsetX = -roomWidth * scaleToWorld * 5;
+      const offsetZ = -roomHeight * scaleToWorld * 5;
+      
+      // Create furniture
+      roomItems.forEach(item => {
+        // Calculate position in 3D space
+        const canvasWidth = roomWidth * scale;
+        const canvasHeight = roomHeight * scale;
+        const canvas2DOffsetX = (canvas.width - canvasWidth) / 2;
+        const canvas2DOffsetY = (canvas.height - canvasHeight) / 2;
+        
+        // Convert 2D canvas position to 3D position
+        const x = ((item.x - canvas2DOffsetX) / scale) * scaleToWorld * 10 + offsetX;
+        const z = ((item.y - canvas2DOffsetY) / scale) * scaleToWorld * 10 + offsetZ;
+        
+        // Create cube for furniture item
+        let geometry, material, mesh;
+        
+        switch(item.type) {
+          case 'chair':
+            geometry = new THREE.BoxGeometry(item.width * scaleToWorld, 0.5, item.height * scaleToWorld);
+            material = new THREE.MeshStandardMaterial({ color: item.color });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 0.25, z);
+            break;
+          case 'table':
+            geometry = new THREE.BoxGeometry(item.width * scaleToWorld, 0.8, item.height * scaleToWorld);
+            material = new THREE.MeshStandardMaterial({ color: item.color });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 0.4, z);
+            break;
+          case 'sofa':
+            geometry = new THREE.BoxGeometry(item.width * scaleToWorld, 0.9, item.height * scaleToWorld);
+            material = new THREE.MeshStandardMaterial({ color: item.color });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 0.45, z);
+            break;
+          case 'bed':
+            geometry = new THREE.BoxGeometry(item.width * scaleToWorld, 0.6, item.height * scaleToWorld);
+            material = new THREE.MeshStandardMaterial({ color: item.color });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 0.3, z);
+            break;
+          case 'lamp':
+            geometry = new THREE.CylinderGeometry(item.width * scaleToWorld * 0.3, item.width * scaleToWorld * 0.5, 2, 8);
+            material = new THREE.MeshStandardMaterial({ color: item.color, emissive: item.color, emissiveIntensity: 0.5 });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 1, z);
+            
+            // Add light source for lamp
+            const light = new THREE.PointLight(0xffffcc, 1, 10);
+            light.position.set(x, 2, z);
+            scene.add(light);
+            break;
+          case 'shelf':
+            geometry = new THREE.BoxGeometry(item.width * scaleToWorld, 2, item.height * scaleToWorld);
+            material = new THREE.MeshStandardMaterial({ color: item.color });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 1, z);
+            break;
+          default:
+            geometry = new THREE.BoxGeometry(item.width * scaleToWorld, 1, item.height * scaleToWorld);
+            material = new THREE.MeshStandardMaterial({ color: item.color });
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, 0.5, z);
+        }
+        
+        // Apply rotation
+        mesh.rotation.y = item.rotation * Math.PI / 180;
+        
+        // Add shadow
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        
+        // Add to scene
+        scene.add(mesh);
+        furniture3DObjects.push(mesh);
+      });
+    }
+    
+    function closeModal() {
+      document.getElementById('floorPlan3DModal').style.display = 'none';
+    }
+    
+    function resetCamera() {
+      camera.position.set(0, 10, 10);
+      camera.lookAt(0, 0, 0);
+      controls.reset();
+      isFirstPersonView = false;
+    }
+    
+    function toggleWireframe() {
+      wireframeMaterial = !wireframeMaterial;
+      
+      // Toggle wireframe on floor
+      floorMesh.material.wireframe = wireframeMaterial;
+      
+      // Toggle wireframe on walls
+      wallsMesh.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.wireframe = wireframeMaterial;
+        }
+      });
+      
+      // Toggle wireframe on furniture
+      furniture3DObjects.forEach(obj => {
+        obj.material.wireframe = wireframeMaterial;
+      });
+    }
+    
+    function toggleFirstPerson() {
+      isFirstPersonView = !isFirstPersonView;
+      
+      if (isFirstPersonView) {
+        // Switch to first-person view
+        camera.position.set(0, 1.7, 0); // Average human height
+        camera.lookAt(1, 1.7, 0);
+        
+        // Update controls for first-person
+        controls.maxPolarAngle = Math.PI; // Allow looking straight down
+        controls.minDistance = 0;
+        controls.maxDistance = 0;
+      } else {
+        // Switch back to orbit view
+        resetCamera();
+        
+        // Restore orbit control defaults
+        controls.minDistance = 1;
+        controls.maxDistance = 100;
+      }
+    }
+  </script>
+</body>
+</html>
